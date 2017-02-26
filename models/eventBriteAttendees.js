@@ -3,11 +3,13 @@
  */
 
 var mongoose = require('mongoose');
+var config = require('../modules/config');
 var Schema = mongoose.Schema;
 
 var attendeSchema = new Schema({
 
     eventId     : String,
+    conferenceId: String,
     firstName   : String,
     lastName    : String,
     name        : String,
@@ -20,6 +22,6 @@ var attendeSchema = new Schema({
 
 });
 
-var attendeDb = mongoose.model('eventBriteAttendees',attendeSchema);
+var attendeDb = mongoose.model(config.eventBriteAttendeeCollection,attendeSchema,config.eventBriteAttendeeCollection);
 
 module.exports = attendeDb;
