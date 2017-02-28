@@ -9,7 +9,7 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 var ErrorHandler = require('../modules/utils/ErrorHandler');
 var Error = require('../modules/utils/Error');
-var getAttendee = require('../modules/eventBrite/getAttendeeByEvent');
+var getAttendee = require('../modules/eventBrite/getAttendeeFromEventBrite');
 
 
 router.use(bodyParser.urlencoded({extended: false}));

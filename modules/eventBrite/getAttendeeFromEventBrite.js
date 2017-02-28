@@ -52,7 +52,7 @@ self.updateAttendeeCollectionByEvent = function (id, callBack) {
                             try {
                                 var attendees = [];
                                 if (result.success == true) {
-                                    self.clearAttendees(function (clearResult) {
+                                    self.clearAttendees(id,function (clearResult) {
                                         if (clearResult.success == false) {
                                             callBack(clearResult);
                                         }
@@ -60,15 +60,18 @@ self.updateAttendeeCollectionByEvent = function (id, callBack) {
 
                                             result.data.attendees.forEach(function (attendee) {
                                                 var attendeeData = {
-                                                    eventId: attendee.event_id,
-                                                    conferenceId: id,
+                                                    eventbriteId: attendee.event_id,
+                                                    _p_conference: 'Conference$' + id,
                                                     firstName: attendee.profile.first_name,
                                                     lastName: attendee.profile.last_name,
                                                     name: attendee.profile.name,
                                                     email: attendee.profile.email,
-                                                    addresses: attendee.profile.addresses,
-                                                    checkedIn: attendee.checked_in,
-                                                    status: attendee.status
+                                                    // addresses: attendee.profile.addresses,
+                                                    isCheckedIn: attendee.checked_in,
+                                                    // status: attendee.status,
+                                                    _created_at : new Date(),
+                                                    _updated_at : new Date(),
+                                                    isDeleted : false
                                                 };
                                                 self.saveAttendees(attendeeData);
                                                 attendees.push(attendeeData);
@@ -98,7 +101,7 @@ self.updateAttendeeCollectionByEvent = function (id, callBack) {
 
 self.getAttendeeByEventId = function(id, callBack){
     mongoose.connection.db.collection(config.eventBriteAttendeeCollection, function (err, collection) {console.log("getting collectn er",err);console.log("geting collection data",collection);
-        collection.find({eventId:id}).toArray(function (errors,data) { console.log("errors",errors); console.log("data",data);
+        collection.find({eventbriteId:id}).toArray(function (errors,data) { console.log("errors",errors); console.log("data",data);
            if(err){
                callBack(error.internalError(errors));
            }
@@ -109,9 +112,11 @@ self.getAttendeeByEventId = function(id, callBack){
         });
     });
 };
+
 self.getAttendeeByConferenceId = function(id, callBack){
+    id = 'Conference$' + id
     mongoose.connection.db.collection(config.eventBriteAttendeeCollection, function (err, collection) {
-        collection.find({conferenceId:id}).toArray(function (err,data) { console.log(err,data)
+        collection.find({_p_conference:id}).toArray(function (err,data) { console.log(err,data)
             if(err){
                 callBack(error.internalError(err));
             }
@@ -123,21 +128,26 @@ self.getAttendeeByConferenceId = function(id, callBack){
     });
 };
 
-self.clearAttendees = function (callBack) {
-    Attendee.remove(function (err, data) {
-        if (err) {
-            callBack(error.internalError(err));
-        }
-        else {
-            callBack(success.success(data));
-        }
+self.clearAttendees = function (id,callBack) {
+    id = 'Conference$' + id;
+    mongoose.connection.db.collection(config.eventBriteAttendeeCollection, function (err, collection) {
+        collection.remove({_p_conference:id},function (err, data) {
+            if(err){
+                callBack(error.internalError());
+            }
+            else
+            {
+                callBack(success.success(data));
+            }
+        });
     });
 };
 
 self.saveAttendees = function (data) {
-    var attendee = new Attendee(data);
-    attendee.save(function (err, data) {
-        console.log(err, data);
+    mongoose.connection.db.collection(config.eventBriteAttendeeCollection, function (err, collection) {
+        collection.insert(data,function (err, data) {
+            console.log(err, data)
+        });
     });
 };
 
