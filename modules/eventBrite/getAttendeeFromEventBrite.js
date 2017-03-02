@@ -168,13 +168,14 @@ self.compareAndSaveAttendees = function (eventBriteData, eventId,id, callBack) {
                     });
 
                     if(!flag){
-                        self.saveAttendees(eventData)
+                        attendees.push(eventData);
+                        self.saveAttendees(eventData);
                     }
 
                 });
 
 
-                callBack(success.successTrue());
+                callBack(success.success(oconnectData.concat(attendees)));
 
 
             }

@@ -12,6 +12,12 @@ var eventBrite      =   require('./routes/eventBrite');
 
 var app = express();
 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 var server = app.listen(config.serverPort, function () {
 
     var host = server.address().address;
@@ -19,6 +25,8 @@ var server = app.listen(config.serverPort, function () {
     console.log("Server Started \n  listening at port : %s", port);
 
 });
+
+
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
