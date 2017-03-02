@@ -4,6 +4,7 @@
 
 var unirest = require('unirest');
 var mongoose = require('mongoose');
+var shortid = require('shortid');
 var error = require('../utils/Error');
 var success = require('../utils/Success');
 var config = require('../config');
@@ -40,7 +41,7 @@ self.updateAttendeeCollectionByEvent = function (id, callBack) {
                         callBack(error.error('EventBrite Details Not Updated, Please check', 403))
                     }
                     else {
-                        // callBack(success.success(conferenceData));
+
                         var api = new Api();
                         api.url = 'https://www.eventbriteapi.com/v3/events/' + conferenceData.eventbriteId + '/attendees/';
                         api.oauthToken = conferenceData.eventbriteToken;
@@ -50,36 +51,33 @@ self.updateAttendeeCollectionByEvent = function (id, callBack) {
                         };
                         api.get(function (result) {
                             try {
-                                var attendees = [];
+
                                 if (result.success == true) {
-                                    self.clearAttendees(id,function (clearResult) {
-                                        if (clearResult.success == false) {
-                                            callBack(clearResult);
-                                        }
-                                        else {
 
-                                            result.data.attendees.forEach(function (attendee) {
-                                                var attendeeData = {
-                                                    eventbriteId: attendee.event_id,
-                                                    _p_conference: 'Conference$' + id,
-                                                    firstName: attendee.profile.first_name,
-                                                    lastName: attendee.profile.last_name,
-                                                    name: attendee.profile.name,
-                                                    email: attendee.profile.email,
-                                                    // addresses: attendee.profile.addresses,
-                                                    isCheckedIn: attendee.checked_in,
-                                                    // status: attendee.status,
-                                                    _created_at : new Date(),
-                                                    _updated_at : new Date(),
-                                                    isDeleted : false
-                                                };
-                                                self.saveAttendees(attendeeData);
-                                                attendees.push(attendeeData);
-                                            });
-
-                                            callBack(success.success(attendees));
-                                        }
+                                    var attendees = [];
+                                    result.data.attendees.forEach(function (attendee) {
+                                        var data = {
+                                            _id: shortid.generate(),
+                                            eventbriteId: attendee.event_id,
+                                            _p_conference: 'Conference$' + id,
+                                            firstName: attendee.profile.first_name,
+                                            lastName: attendee.profile.last_name,
+                                            name: attendee.profile.name,
+                                            email: attendee.profile.email,
+                                            // addresses: attendee.profile.addresses,
+                                            // isCheckedIn: attendee.checked_in,
+                                            // status: attendee.status,
+                                            _created_at: new Date(),
+                                            _updated_at: new Date(),
+                                            // isDeleted: false
+                                        };
+                                        attendees.push(data);
                                     });
+                                    
+                                    self.compareAndSaveAttendees(attendees,conferenceData.eventbriteId, id, function (saveResult) {
+                                      callBack(saveResult);
+                                    });
+
                                 }
                                 else {
                                     callBack(result);
@@ -99,44 +97,43 @@ self.updateAttendeeCollectionByEvent = function (id, callBack) {
 
 };
 
-self.getAttendeeByEventId = function(id, callBack){
-    mongoose.connection.db.collection(config.eventBriteAttendeeCollection, function (err, collection) {console.log("getting collectn er",err);console.log("geting collection data",collection);
-        collection.find({eventbriteId:id}).toArray(function (errors,data) { console.log("errors",errors); console.log("data",data);
-           if(err){
-               callBack(error.internalError(errors));
-           }
-           else
-           {
-               callBack(success.success(data));
-           }
-        });
-    });
-};
-
-self.getAttendeeByConferenceId = function(id, callBack){
-    id = 'Conference$' + id
+self.getAttendeeByEventId = function (id, callBack) {
     mongoose.connection.db.collection(config.eventBriteAttendeeCollection, function (err, collection) {
-        collection.find({_p_conference:id}).toArray(function (err,data) { console.log(err,data)
-            if(err){
-                callBack(error.internalError(err));
+
+        collection.find({eventbriteId: id}).toArray(function (errors, data) {
+            if (err) {
+                callBack(error.internalError(errors));
             }
-            else
-            {
+            else {
                 callBack(success.success(data));
             }
         });
     });
 };
 
-self.clearAttendees = function (id,callBack) {
+self.getAttendeeByConferenceId = function (id, callBack) {
+    id = 'Conference$' + id
+    mongoose.connection.db.collection(config.eventBriteAttendeeCollection, function (err, collection) {
+        collection.find({_p_conference: id}).toArray(function (err, data) {
+            console.log(err, data)
+            if (err) {
+                callBack(error.internalError(err));
+            }
+            else {
+                callBack(success.success(data));
+            }
+        });
+    });
+};
+
+self.clearAttendees = function (id, callBack) {
     id = 'Conference$' + id;
     mongoose.connection.db.collection(config.eventBriteAttendeeCollection, function (err, collection) {
-        collection.remove({_p_conference:id},function (err, data) {
-            if(err){
+        collection.remove({_p_conference: id}, function (err, data) {
+            if (err) {
                 callBack(error.internalError());
             }
-            else
-            {
+            else {
                 callBack(success.success(data));
             }
         });
@@ -145,15 +142,46 @@ self.clearAttendees = function (id,callBack) {
 
 self.saveAttendees = function (data) {
     mongoose.connection.db.collection(config.eventBriteAttendeeCollection, function (err, collection) {
-        collection.insert(data,function (err, data) {
-            console.log(err, data)
+        collection.insert(data, function (err, data) {
+            console.log("saveeee",err, data)
         });
     });
 };
 
-self.test = function (callBack) {
-    // self.updateAttendeeCollectionByEvent('32214579675', 'GCW4L7HZM5TFGKC25R7M', function (result) {
-    self.updateAttendeeCollectionByEvent('32214579675', function (result) {
-        callBack(result);
+
+self.compareAndSaveAttendees = function (eventBriteData, eventId,id, callBack) {
+    mongoose.connection.db.collection(config.eventBriteAttendeeCollection, function (err, collection) {
+        collection.find({eventbriteId: eventId}).toArray(function (errors, oconnectData) {
+            if (err) {
+                callBack(error.internalError(err));
+            }
+            else {
+                var attendees = [];
+                eventBriteData.forEach(function (eventData,count) {
+                    var flag = false;
+                    oconnectData.forEach(function (data) {
+                        if(!flag){
+                            if(eventData.email == data.email){
+                                flag = true;
+                            }
+                        }
+                    });
+
+                    if(!flag){
+                        self.saveAttendees(eventData)
+                    }
+
+                });
+
+
+                callBack(success.successTrue());
+
+
+            }
+        });
     });
 };
+
+
+
+

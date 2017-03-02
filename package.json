@@ -21,6 +21,7 @@
     "express": "^4.14.1",
     "mongoose": "^4.8.4",
     "serve-index": "^1.8.0",
+    "shortid": "^2.2.6",
     "unirest": "^0.5.1"
   }
 }

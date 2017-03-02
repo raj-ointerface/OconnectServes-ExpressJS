@@ -15,6 +15,14 @@ module.exports = {
 
         return (response);
 
+    } ,
+
+    successTrue : function () {
+        var response = {
+            'success' : true
+        };
+
+        return (response);
     }
 
 
