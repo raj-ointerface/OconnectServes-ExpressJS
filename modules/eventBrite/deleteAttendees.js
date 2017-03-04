@@ -17,7 +17,7 @@ self.deleteAttendee = function (id,callBack) {
         }
         else
         {
-            collection.update({_id : id},{isDeleted : true},{upsert : true},function (updateError,updateData) {
+            collection.update({_id : id},{$set:{'isDeleted' : true}},{upsert : true},function (updateError,updateData) {
                 if(updateError){
                     callBack(error.internalError(updateError));
                 }
