@@ -10,6 +10,7 @@ var bodyParser = require('body-parser');
 var ErrorHandler = require('../modules/utils/ErrorHandler');
 var Error = require('../modules/utils/Error');
 var getAttendee = require('../modules/eventBrite/getAttendeeFromEventBrite');
+var deleteAttendee = require('../modules/eventBrite/deleteAttendees');
 
 
 router.use(bodyParser.urlencoded({extended: false}));
@@ -82,6 +83,20 @@ router.post('/getAttendeesByConferenceId',function (req,res) {
         res.status(401);
         res.send(Error.error('Input Error'));
     }
+});
+
+router.post('/deleteAttendee',function (req,res) {
+   if(ErrorHandler.checkInputs([req.body.id])){
+       deleteAttendee.deleteAttendee(req.body.id,function (result) {
+           res.status(200);
+           res.send(result);
+       });
+   }
+   else
+   {
+       res.status(401);
+       res.send(Error.error("Input Error"))
+   }
 });
 
 

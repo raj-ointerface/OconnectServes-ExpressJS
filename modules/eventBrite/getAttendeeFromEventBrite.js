@@ -65,11 +65,11 @@ self.updateAttendeeCollectionByEvent = function (id, callBack) {
                                             name: attendee.profile.name,
                                             email: attendee.profile.email,
                                             // addresses: attendee.profile.addresses,
-                                            // isCheckedIn: attendee.checked_in,
+                                            isCheckedIn: false,
                                             // status: attendee.status,
                                             _created_at: new Date(),
                                             _updated_at: new Date(),
-                                            // isDeleted: false
+                                            isDeleted: false
                                         };
                                         attendees.push(data);
                                     });
