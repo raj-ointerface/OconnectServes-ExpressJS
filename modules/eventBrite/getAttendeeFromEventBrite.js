@@ -98,7 +98,7 @@ self.updateAttendeeCollectionByEvent = function (id, callBack) {
 };
 
 self.getAttendeeByEventId = function (id, callBack) {
-    mongoose.connection.db.collection(config.eventBriteAttendeeCollection, function (err, collection) {
+    mongoose.connection.db.collection(config.attendeeCollection, function (err, collection) {
 
         collection.find({eventbriteId: id}).toArray(function (errors, data) {
             if (err) {
@@ -113,7 +113,7 @@ self.getAttendeeByEventId = function (id, callBack) {
 
 self.getAttendeeByConferenceId = function (id, callBack) {
     id = 'Conference$' + id
-    mongoose.connection.db.collection(config.eventBriteAttendeeCollection, function (err, collection) {
+    mongoose.connection.db.collection(config.attendeeCollection, function (err, collection) {
         collection.find({_p_conference: id}).toArray(function (err, data) {
             console.log(err, data)
             if (err) {
@@ -128,7 +128,7 @@ self.getAttendeeByConferenceId = function (id, callBack) {
 
 self.clearAttendees = function (id, callBack) {
     id = 'Conference$' + id;
-    mongoose.connection.db.collection(config.eventBriteAttendeeCollection, function (err, collection) {
+    mongoose.connection.db.collection(config.attendeeCollection, function (err, collection) {
         collection.remove({_p_conference: id}, function (err, data) {
             if (err) {
                 callBack(error.internalError());
@@ -141,7 +141,7 @@ self.clearAttendees = function (id, callBack) {
 };
 
 self.saveAttendees = function (data) {
-    mongoose.connection.db.collection(config.eventBriteAttendeeCollection, function (err, collection) {
+    mongoose.connection.db.collection(config.attendeeCollection, function (err, collection) {
         collection.insert(data, function (err, data) {
             console.log("saveeee",err, data)
         });
@@ -150,7 +150,7 @@ self.saveAttendees = function (data) {
 
 
 self.compareAndSaveAttendees = function (eventBriteData, eventId,id, callBack) {
-    mongoose.connection.db.collection(config.eventBriteAttendeeCollection, function (err, collection) {
+    mongoose.connection.db.collection(config.attendeeCollection, function (err, collection) {
         collection.find({eventbriteId: eventId}).toArray(function (errors, oconnectData) {
             if (err) {
                 callBack(error.internalError(err));

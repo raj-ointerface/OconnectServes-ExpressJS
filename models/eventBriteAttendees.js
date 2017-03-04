@@ -22,6 +22,6 @@ var attendeSchema = new Schema({
 
 });
 
-var attendeDb = mongoose.model(config.eventBriteAttendeeCollection,attendeSchema,config.eventBriteAttendeeCollection);
+var attendeDb = mongoose.model(config.attendeeCollection,attendeSchema,config.attendeeCollection);
 
 module.exports = attendeDb;

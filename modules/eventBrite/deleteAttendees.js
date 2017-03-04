@@ -11,7 +11,7 @@ var config = require('../config');
 module.exports = self = {};
 
 self.deleteAttendee = function (id,callBack) {
-    mongoose.connection.db.collection(config.conferenceCollection, function (err, collection) {
+    mongoose.connection.db.collection(config.attendeeCollection, function (err, collection) {
         if(err){
             callBack(error.internalError(err));
         }
