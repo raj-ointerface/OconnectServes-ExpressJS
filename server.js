@@ -9,6 +9,7 @@ var serveIndex      =   require('serve-index');
 var config          =   require('./modules/config');
 
 var eventBrite      =   require('./routes/eventBrite');
+var organisation      =   require('./routes/Organisation');
 
 var app = express();
 
@@ -32,6 +33,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 app.use('/eventBrite', eventBrite);
+app.use('/organisation', organisation);
 
 app.get('/',function (req,res) {
     res.send("hey.. It workzz")
