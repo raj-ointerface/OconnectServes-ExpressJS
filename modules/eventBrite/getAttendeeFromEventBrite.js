@@ -69,7 +69,23 @@ self.updateAttendeeCollectionByEvent = function (id, callBack) {
                                             // status: attendee.status,
                                             _created_at: new Date(),
                                             _updated_at: new Date(),
-                                            isDeleted: false
+                                            isDeleted: false,
+                                            "_acl" : {
+                                                "*" : {
+                                                    "r" : true
+                                                },
+                                                "role:Admin" : {
+                                                    "r" : true,
+                                                    "w" : true
+                                                },
+                                                "role:Editor" : {
+                                                    "r" : true,
+                                                    "w" : true
+                                                },
+                                                "role:User" : {
+                                                    "r" : true
+                                                }
+                                            }
                                         };
                                         attendees.push(data);
                                     });
