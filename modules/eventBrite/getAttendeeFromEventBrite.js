@@ -70,6 +70,17 @@ self.updateAttendeeCollectionByEvent = function (id, callBack) {
                                             _created_at: new Date(),
                                             _updated_at: new Date(),
                                             isDeleted: false,
+                                            "_rperm" : [
+                                                "*",
+                                                "role:Admin",
+                                                "role:Editor",
+                                                "role:User"
+                                            ],
+                                            "_wperm" : [
+                                                "role:Admin",
+                                                "role:Editor",
+                                                "role:User"
+                                            ],
                                             "_acl" : {
                                                 "*" : {
                                                     "r" : true
