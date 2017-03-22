@@ -9,6 +9,7 @@ var error = require('../utils/Error');
 var success = require('../utils/Success');
 var config = require('../config');
 var Api = require('../utils/CallApi');
+var utils = require('../utils/stringOperations');
 var Attendee = require('../../models/eventBriteAttendees');
 
 
@@ -71,6 +72,7 @@ self.updateAttendeeCollectionByEvent = function (id, callBack) {
                                                 _created_at: new Date(),
                                                 _updated_at: new Date(),
                                                 isDeleted: false,
+                                                IOS_code : utils.generateRandomString(7),
                                                 _rperm: [
                                                     "*",
                                                     "role:Admin",
