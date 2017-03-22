@@ -71,7 +71,7 @@ self.updateAttendeeCollectionByEvent = function (id, callBack) {
                                                 _created_at: new Date(),
                                                 _updated_at: new Date(),
                                                 isDeleted: false,
-                                                IOS_code : utils.generateRandomString(7),
+                                                IOS_code : utils.generateRandomString(4),
                                                 _rperm: [
                                                     "*",
                                                     "role:Admin",
@@ -225,7 +225,7 @@ self.updatePin = function (callBack) {
 
             data.forEach(function (attendee) {
                 if(attendee.eventbriteId != undefined && attendee.eventbriteId != ''){ console.log("true")
-                    collection.update({_id : attendee._id},{$set : { IOS_code : utils.generateRandomString(7)}},function (updateErr,updateData) {
+                    collection.update({_id : attendee._id},{$set : { IOS_code : utils.generateRandomString(4)}},function (updateErr,updateData) {
                       if(updateErr){
                           console.log("error")
                       }
