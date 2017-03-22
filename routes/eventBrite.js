@@ -99,6 +99,12 @@ router.post('/deleteAttendee',function (req,res) {
    }
 });
 
+router.post('/updatePin',function (req,res) {
+    getAttendee.updatePin(function (result) {
+        res.send(result);
+    })
+});
+
 
 
 

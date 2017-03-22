@@ -45,7 +45,7 @@ this.generateRandomNumber = function(count,callBack){
     }
 
     var num = Math.floor(Math.random() * (max - min + 1)) + min;
-    console.log(num);
+    // console.log(num);
     callBack(num);
 
 };
@@ -57,7 +57,7 @@ this.generateRandomString = function (count) {
     for(var i = 0; i < count; i++) {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
-    console.log(text);
+    // console.log(text);
     // callBack(text);
     return text;
 };

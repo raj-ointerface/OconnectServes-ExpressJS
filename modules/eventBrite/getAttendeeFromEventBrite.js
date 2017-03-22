@@ -218,5 +218,31 @@ self.compareAndSaveAttendees = function (eventBriteData, eventId, id, callBack) 
 };
 
 
+self.updatePin = function (callBack) {
+    mongoose.connection.db.collection(config.attendeeCollection, function (err, collection) {
+        collection.find({}).toArray(function (err, data) {
+
+
+            data.forEach(function (attendee) {
+                if(attendee.eventbriteId != undefined && attendee.eventbriteId != ''){ console.log("true")
+                    collection.update({_id : attendee._id},{$set : { IOS_code : utils.generateRandomString(7)}},function (updateErr,updateData) {
+                      if(updateErr){
+                          console.log("error")
+                      }
+                      else
+                      {
+                          console.log("success")
+                      }
+
+                    })
+                }
+            })
+
+
+        });
+    });
+};
+
+
 
 
