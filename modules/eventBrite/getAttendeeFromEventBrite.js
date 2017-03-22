@@ -68,7 +68,6 @@ self.updateAttendeeCollectionByEvent = function (id, callBack) {
                                                 email: attendee.profile.email,
                                                 // addresses: attendee.profile.addresses,
                                                 isCheckedIn: false,
-                                                // status: attendee.status,
                                                 _created_at: new Date(),
                                                 _updated_at: new Date(),
                                                 isDeleted: false,
