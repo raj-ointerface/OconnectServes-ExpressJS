@@ -19,12 +19,16 @@ module.exports = {
 
         }  ,
 
-        error : function (error,statusCode = 401) {
+        error : function (error,statusCode) {
+
+            if(!statusCode){
+                statusCode = 401;
+            }
 
             var response = {
                 'success' : false,
                 'error' : error,
-                'StatusCode' : statusCode,
+                'StatusCode' : statusCode
             };
 
             return (response);
